@@ -14,8 +14,9 @@ const express_1 = require("express");
 const socket_io_client_1 = require("socket.io-client");
 exports.UserFlagController = (0, express_1.Router)();
 exports.UserFlagController.get("/setFlagData", (request, response, next) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("${request.hostname}", `${request.hostname}`);
     const socket = (0, socket_io_client_1.io)(`http://${request.hostname}:4000`);
-    const data = request.body;
+    const data = {};
     socket.emit("setFlagData", "cnRhcnN0YWRmdXR1dzpzeXV0c3l0ZHlzdDp5ZHRzdGR5dHlkczpkZXY=", data);
     response.sendStatus(200);
 }));

@@ -7,8 +7,9 @@ export const UserFlagController = Router();
 UserFlagController.get(
   "/setFlagData",
   async (request: Request, response: Response, next: NextFunction) => {
+      console.log("${request.hostname}",`${request.hostname}`);
     const socket = io(`http://${request.hostname}:4000`);
-    const data:IUserDefinedFlags = request.body;
+    const data:any = {};
     socket.emit("setFlagData","cnRhcnN0YWRmdXR1dzpzeXV0c3l0ZHlzdDp5ZHRzdGR5dHlkczpkZXY=",data)
     response.sendStatus(200);
   }
