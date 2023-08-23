@@ -2,10 +2,10 @@
   "name": "socketServer",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/server.js",
+  "main": "public/server.js",
   "scripts": {
     "build": "tsc",
-    "start": "tsc && node dist/server.js"
+    "start": "tsc && node public/server.js"
   },
   "keywords": [],
   "author": "",
