@@ -9,7 +9,6 @@ const http_1 = __importDefault(require("http"));
 const express_1 = __importDefault(require("express"));
 const socket_io_1 = require("socket.io");
 const mongodb_1 = require("mongodb");
-const Utility_1 = require("./Utility/Utility");
 const FlagHandler_1 = __importDefault(require("./Provider/FlagHandler"));
 const UserFlagController_1 = require("./Controller/UserFlagController");
 process.on('uncaughtException', (error, origin) => {
@@ -25,8 +24,8 @@ process.on('unhandledRejection', (reason, promise) => {
     console.log(reason);
 });
 const app = (0, express_1.default)();
-const uri = (0, Utility_1.getEnvironmentVariableValueByKey)('MONGODBURI');
-const dbName = (0, Utility_1.getEnvironmentVariableValueByKey)('MONGODB');
+const uri = 'mongodb+srv://rishavmittal2903:Bangalore_94@cluster0.vozyvlu.mongodb.net/?retryWrites=true&w=majority';
+const dbName = 'flagManagement';
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 exports.client = new mongodb_1.MongoClient(uri, {
     serverApi: {
@@ -44,7 +43,7 @@ const io = new socket_io_1.Server(server, {
     }
 });
 (0, FlagHandler_1.default)(io);
-const port = (0, Utility_1.getEnvironmentVariableValueByKey)('PORT') || 8081;
+const port = 4000;
 app.use((0, cors_1.default)());
 app.use(express_1.default.static(__dirname));
 app.use(express_1.default.json());

@@ -3,7 +3,6 @@ import http from 'http';
 import Express from 'express'
 import {Server} from 'socket.io'
 import {MongoClient, ServerApiVersion} from "mongodb"
-import { getEnvironmentVariableValueByKey } from './Utility/Utility';
 import socketConnectionHandler from './Provider/FlagHandler';
 import { UserFlagController } from './Controller/UserFlagController';
 
@@ -22,8 +21,8 @@ process.on('unhandledRejection', (reason, promise) => {
 })
 
 const app = Express();
-const uri = getEnvironmentVariableValueByKey('MONGODBURI');
-const dbName= getEnvironmentVariableValueByKey('MONGODB');
+const uri = 'mongodb+srv://rishavmittal2903:Bangalore_94@cluster0.vozyvlu.mongodb.net/?retryWrites=true&w=majority';
+const dbName= 'flagManagement';
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
  export const client = new MongoClient(uri, {
   serverApi: {
@@ -42,7 +41,7 @@ const io = new Server(server,{
 });
 
 socketConnectionHandler(io);
-const port = getEnvironmentVariableValueByKey('PORT')|| 8081;
+const port = 4000;
 app.use(cors());
 app.use(Express.static(__dirname));
 app.use(Express.json())

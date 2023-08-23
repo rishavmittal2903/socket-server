@@ -12,10 +12,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserFlagController = void 0;
 const express_1 = require("express");
 const socket_io_client_1 = require("socket.io-client");
-const Utility_1 = require("../Utility/Utility");
 exports.UserFlagController = (0, express_1.Router)();
 exports.UserFlagController.get("/setFlagData", (request, response, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const socket = (0, socket_io_client_1.io)(`http://${request.hostname}:${(0, Utility_1.getEnvironmentVariableValueByKey)('PORT')}`);
+    const socket = (0, socket_io_client_1.io)(`http://${request.hostname}:4000`);
     const data = request.body;
     socket.emit("setFlagData", "cnRhcnN0YWRmdXR1dzpzeXV0c3l0ZHlzdDp5ZHRzdGR5dHlkczpkZXY=", data);
     response.sendStatus(200);
