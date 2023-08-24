@@ -75,6 +75,14 @@ export const getProjectDataByProjectAndOrganizationId = async (
   return data;
 };
 
+export const getProjectsByEmailId = async (emailId: string, orgId:string) => {
+  const data = await dbClient
+    .collection<IProjectDetail>("projectDetail")
+    .find({ $or: [ { "owners.email": emailId }, { "contributors.email": emailId } ], $and:[{organizationId:orgId}] })
+    .toArray();
+  return data;
+};
+
 export const deleteProjectByProjectIdAndOrgId = async (
     projectId: string,
     organizationId: string,

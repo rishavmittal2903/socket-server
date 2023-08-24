@@ -26,10 +26,22 @@ exports.ProjectController.get("/project/:projectId", (request, response, next) =
         response.send(err).sendStatus(500);
     }
 }));
-exports.ProjectController.get("/projects/:orgId", (request, response, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _b;
+exports.ProjectController.get("/allProjects/:emailId/:orgId", (request, response, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _b, _c;
     try {
-        const orgId = ((_b = request.params) === null || _b === void 0 ? void 0 : _b.orgId) || "";
+        const emailId = ((_b = request.params) === null || _b === void 0 ? void 0 : _b.emailId) || "";
+        const orgId = ((_c = request.params) === null || _c === void 0 ? void 0 : _c.orgId) || "";
+        const data = yield (0, ProjectDataProvider_1.getProjectsByEmailId)(emailId, orgId);
+        response.send(data);
+    }
+    catch (err) {
+        response.send(err).sendStatus(500);
+    }
+}));
+exports.ProjectController.get("/projects/:orgId", (request, response, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _d;
+    try {
+        const orgId = ((_d = request.params) === null || _d === void 0 ? void 0 : _d.orgId) || "";
         const data = yield (0, ProjectDataProvider_1.getProjectsByOrganizationId)(orgId);
         response.send(data);
     }
@@ -38,10 +50,10 @@ exports.ProjectController.get("/projects/:orgId", (request, response, next) => _
     }
 }));
 exports.ProjectController.post("/project", (request, response, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _c;
+    var _e;
     try {
         const projectData = request.body;
-        const envType = (_c = request.headers) === null || _c === void 0 ? void 0 : _c.envtype;
+        const envType = (_e = request.headers) === null || _e === void 0 ? void 0 : _e.envtype;
         const data = yield (0, ProjectDataProvider_1.insertProjectData)(projectData, "testUser", socket, envType);
         response.send(data);
     }
@@ -50,11 +62,11 @@ exports.ProjectController.post("/project", (request, response, next) => __awaite
     }
 }));
 exports.ProjectController.delete("/project/:projId/:orgId", (request, response, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _d, _e, _f;
+    var _f, _g, _h;
     try {
-        const projId = ((_d = request.params) === null || _d === void 0 ? void 0 : _d.projId) || "";
-        const orgId = ((_e = request.params) === null || _e === void 0 ? void 0 : _e.orgId) || "";
-        const envType = (_f = request.headers) === null || _f === void 0 ? void 0 : _f.envtype;
+        const projId = ((_f = request.params) === null || _f === void 0 ? void 0 : _f.projId) || "";
+        const orgId = ((_g = request.params) === null || _g === void 0 ? void 0 : _g.orgId) || "";
+        const envType = (_h = request.headers) === null || _h === void 0 ? void 0 : _h.envtype;
         const data = yield (0, ProjectDataProvider_1.deleteProjectByProjectIdAndOrgId)(projId, orgId, socket, envType);
         response.send(data);
     }

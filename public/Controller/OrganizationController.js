@@ -26,6 +26,17 @@ exports.OrganizationController.get("/organization/:organizationId", (request, re
         response.send(err).sendStatus(500);
     }
 }));
+exports.OrganizationController.get("/organizations/:emailId", (request, response, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _b;
+    try {
+        const emailId = ((_b = request.params) === null || _b === void 0 ? void 0 : _b.emailId) || "";
+        const data = yield (0, OrganizationProvider_1.getOrganizationByEmailId)(emailId);
+        response.send(data);
+    }
+    catch (err) {
+        response.send(err).sendStatus(500);
+    }
+}));
 exports.OrganizationController.post("/organization", (request, response, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const organizationData = request.body;
@@ -37,9 +48,9 @@ exports.OrganizationController.post("/organization", (request, response, next) =
     }
 }));
 exports.OrganizationController.delete("/organization/:orgId", (request, response, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _b;
+    var _c;
     try {
-        const organizationId = ((_b = request.params) === null || _b === void 0 ? void 0 : _b.orgId) || "";
+        const organizationId = ((_c = request.params) === null || _c === void 0 ? void 0 : _c.orgId) || "";
         const data = yield (0, OrganizationProvider_1.deleteOrganizationByOrgId)(organizationId, socket);
         response.send(data);
     }

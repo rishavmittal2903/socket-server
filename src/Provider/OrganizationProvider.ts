@@ -35,6 +35,14 @@ export const getOrganizationDataByOrgId = async (organizationId: string) => {
   return data;
 };
 
+export const getOrganizationByEmailId = async (emailId: string) => {
+  const data = await dbClient
+    .collection<IOrganization>("organizationData")
+    .find({ $or: [ { "owners.email": emailId }, { "contributors.email": emailId } ] })
+    .toArray();
+  return data;
+};
+
 export const deleteOrganizationByOrgId = async (
   organizationId: string,
   socket

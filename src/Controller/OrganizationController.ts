@@ -3,6 +3,7 @@ import { io } from "socket.io-client";
 import { IOrganization } from "../Interfaces/IOrganization";
 import {
     deleteOrganizationByOrgId,
+  getOrganizationByEmailId,
   getOrganizationDataByOrgId,
   insertOrganizationData,
 } from "../Provider/OrganizationProvider";
@@ -17,6 +18,20 @@ OrganizationController.get(
       const organizationId: string = request.params?.organizationId || "";
       const data: Array<IOrganization> = await getOrganizationDataByOrgId(
         organizationId
+      );
+      response.send(data);
+    } catch (err) {
+      response.send(err).sendStatus(500);
+    }
+  }
+);
+OrganizationController.get(
+  "/organizations/:emailId",
+  async (request: Request, response: Response, next: NextFunction) => {
+    try {
+      const emailId: string = request.params?.emailId || "";
+      const data: Array<IOrganization> = await getOrganizationByEmailId(
+        emailId
       );
       response.send(data);
     } catch (err) {

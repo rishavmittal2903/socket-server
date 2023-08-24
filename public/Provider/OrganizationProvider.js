@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProjectsByOrganizationId = exports.updateOrganizationDataByOrgId = exports.deleteOrganizationByOrgId = exports.getOrganizationDataByOrgId = exports.insertOrganizationData = void 0;
+exports.getProjectsByOrganizationId = exports.updateOrganizationDataByOrgId = exports.deleteOrganizationByOrgId = exports.getOrganizationByEmailId = exports.getOrganizationDataByOrgId = exports.insertOrganizationData = void 0;
 const server_1 = require("../server");
 const ProjectDataProvider_1 = require("./ProjectDataProvider");
 const insertOrganizationData = (organizationData, userName) => __awaiter(void 0, void 0, void 0, function* () {
@@ -32,6 +32,14 @@ const getOrganizationDataByOrgId = (organizationId) => __awaiter(void 0, void 0,
     return data;
 });
 exports.getOrganizationDataByOrgId = getOrganizationDataByOrgId;
+const getOrganizationByEmailId = (emailId) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield server_1.dbClient
+        .collection("organizationData")
+        .find({ $or: [{ "owners.email": emailId }, { "contributors.email": emailId }] })
+        .toArray();
+    return data;
+});
+exports.getOrganizationByEmailId = getOrganizationByEmailId;
 const deleteOrganizationByOrgId = (organizationId, socket) => __awaiter(void 0, void 0, void 0, function* () {
     const orgData = yield server_1.dbClient
         .collection("organizationData")

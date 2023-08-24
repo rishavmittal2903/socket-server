@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteProjectByOrgId = exports.deleteProjectByProjectIdAndOrgId = exports.getProjectDataByProjectAndOrganizationId = exports.getProjectsByOrganizationId = exports.updateProjectDataByProjectId = exports.getProjectDataByProjectId = exports.insertProjectData = void 0;
+exports.deleteProjectByOrgId = exports.deleteProjectByProjectIdAndOrgId = exports.getProjectsByEmailId = exports.getProjectDataByProjectAndOrganizationId = exports.getProjectsByOrganizationId = exports.updateProjectDataByProjectId = exports.getProjectDataByProjectId = exports.insertProjectData = void 0;
 const server_1 = require("../server");
 const Utility_1 = require("../Utility/Utility");
 const insertProjectData = (flagData, userName, socket, envType) => __awaiter(void 0, void 0, void 0, function* () {
@@ -60,6 +60,14 @@ const getProjectDataByProjectAndOrganizationId = (projectId, organizationId) => 
     return data;
 });
 exports.getProjectDataByProjectAndOrganizationId = getProjectDataByProjectAndOrganizationId;
+const getProjectsByEmailId = (emailId, orgId) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield server_1.dbClient
+        .collection("projectDetail")
+        .find({ $or: [{ "owners.email": emailId }, { "contributors.email": emailId }], $and: [{ organizationId: orgId }] })
+        .toArray();
+    return data;
+});
+exports.getProjectsByEmailId = getProjectsByEmailId;
 const deleteProjectByProjectIdAndOrgId = (projectId, organizationId, socket, envType) => __awaiter(void 0, void 0, void 0, function* () {
     const data = yield server_1.dbClient
         .collection("projectDetail")
