@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAccessPolicyByProjectId = exports.getAccessPolicyByOrganizationId = exports.getFlagDataByProjectId = exports.getFlagDataByProjectAndOrganizationId = exports.getFlagDataByOrganizationId = exports.updateFlagDataByClientId = exports.getFlagDataByClientId = exports.insertFlagData = void 0;
+exports.deleteAccessPolicylagsByOrgId = exports.deleteUserDefinedFlagsByOrgId = exports.deleteAccessPolicylagsByProjectIdAndOrgId = exports.deleteUserDefinedFlagsByProjectIdAndOrgId = exports.getAccessPolicyByProjectId = exports.getAccessPolicyByOrganizationId = exports.getFlagDataByProjectId = exports.getFlagDataByProjectAndOrganizationId = exports.getFlagDataByOrganizationId = exports.updateFlagDataByClientId = exports.getFlagDataByClientId = exports.insertFlagData = void 0;
 const server_1 = require("../server");
 const insertFlagData = (flagData, userName) => __awaiter(void 0, void 0, void 0, function* () {
     const isDataExists = yield (0, exports.getFlagDataByClientId)(flagData.clientId);
@@ -79,4 +79,32 @@ const getAccessPolicyByProjectId = (projectId) => __awaiter(void 0, void 0, void
     return data;
 });
 exports.getAccessPolicyByProjectId = getAccessPolicyByProjectId;
+const deleteUserDefinedFlagsByProjectIdAndOrgId = (projectId, organizationId) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield server_1.dbClient
+        .collection("userDefinedFlags")
+        .deleteMany({ projectId, organizationId });
+    return data;
+});
+exports.deleteUserDefinedFlagsByProjectIdAndOrgId = deleteUserDefinedFlagsByProjectIdAndOrgId;
+const deleteAccessPolicylagsByProjectIdAndOrgId = (projectId, organizationId) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield server_1.dbClient
+        .collection("accessPolicy")
+        .deleteMany({ projectId, organizationId });
+    return data;
+});
+exports.deleteAccessPolicylagsByProjectIdAndOrgId = deleteAccessPolicylagsByProjectIdAndOrgId;
+const deleteUserDefinedFlagsByOrgId = (organizationId) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield server_1.dbClient
+        .collection("userDefinedFlags")
+        .deleteMany({ organizationId });
+    return data;
+});
+exports.deleteUserDefinedFlagsByOrgId = deleteUserDefinedFlagsByOrgId;
+const deleteAccessPolicylagsByOrgId = (organizationId) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield server_1.dbClient
+        .collection("accessPolicy")
+        .deleteMany({ organizationId });
+    return data;
+});
+exports.deleteAccessPolicylagsByOrgId = deleteAccessPolicylagsByOrgId;
 //# sourceMappingURL=DbProvider.js.map

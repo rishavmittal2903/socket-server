@@ -89,3 +89,29 @@ export const getAccessPolicyByProjectId = async (projectId: string) => {
     .toArray();
   return data;
 };
+
+export const deleteUserDefinedFlagsByProjectIdAndOrgId=async(projectId:string, organizationId:string)=>{
+    const data = await dbClient
+    .collection<IUserDefinedFlags>("userDefinedFlags")
+    .deleteMany({ projectId,organizationId })
+  return data;
+}
+export const deleteAccessPolicylagsByProjectIdAndOrgId=async(projectId:string, organizationId:string)=>{
+    const data = await dbClient
+    .collection<IAccessPolicy>("accessPolicy")
+    .deleteMany({ projectId,organizationId })
+  return data;
+}
+
+export const deleteUserDefinedFlagsByOrgId=async(organizationId:string)=>{
+    const data = await dbClient
+    .collection<IUserDefinedFlags>("userDefinedFlags")
+    .deleteMany({ organizationId })
+  return data;
+}
+export const deleteAccessPolicylagsByOrgId=async(organizationId:string)=>{
+    const data = await dbClient
+    .collection<IAccessPolicy>("accessPolicy")
+    .deleteMany({ organizationId })
+  return data;
+}

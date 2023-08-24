@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const uuid_1 = require("uuid");
-const DbProvider_1 = require("./DbProvider");
+const ProjectDataProvider_1 = require("./ProjectDataProvider");
 class FlagHandler {
     constructor(io, socket) {
         this.socket = socket;
@@ -18,19 +18,25 @@ class FlagHandler {
     }
     getFlagData(key) {
         const decodeData = this.decode(key);
-        const clientId = decodeData.split(":")[2];
-        (0, DbProvider_1.getFlagDataByClientId)(clientId).then((response) => {
-            var _a;
-            this.sendNotification(clientId, ((_a = response[0]) === null || _a === void 0 ? void 0 : _a.flagData) || []);
+        const organizationId = decodeData.split(":")[0], projectId = decodeData.split(":")[1], envType = decodeData.split(":")[2] || "";
+        (0, ProjectDataProvider_1.getProjectDataByProjectAndOrganizationId)(projectId, organizationId).then((response) => {
+            let envTypeResponse = [];
+            if (response.length) {
+                envTypeResponse = response[0].environments.filter((flag) => flag.envType == envType);
+            }
+            this.sendNotification(decodeData, envTypeResponse || []);
         });
     }
-    setFlagData(key, flagData) {
-        console.log('key', key);
+    setFlagData(key, projectData) {
         const decodeData = this.decode(key);
-        const clientId = decodeData.split(":")[2];
-        // insertFlagData(flagData, "testUser").then((response) => {
-        // this.sendNotification(clientId, flagData.flagData);
-        // });
+        const envType = decodeData.split(":")[2] || "";
+        (0, ProjectDataProvider_1.insertProjectData)(projectData, "testUser").then((response) => {
+            let envTypeResponse = [];
+            if (projectData.environments.length) {
+                envTypeResponse = projectData.environments.filter((flag) => flag.envType == envType && flag.envId === key);
+            }
+            this.sendNotification(decodeData, envTypeResponse);
+        });
     }
     sendNotification(clientId, data) {
         const notification = {

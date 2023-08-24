@@ -14,6 +14,16 @@ export interface IUserDefinedFlags {
     envType: string;
     flagName: string;
     isFlagEnabled: string;
-    clientId: string;
+  }export interface IAccessPolicy {
+    organizationId: string;
+    projectId: string;
+    owners: Array<IRole>;
+    contributors: Array<IRole>;
   }
+  
+  export interface IRole {
+    email: string;
+    name: string;
+  }
+  
   

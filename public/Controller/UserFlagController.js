@@ -13,11 +13,10 @@ exports.UserFlagController = void 0;
 const express_1 = require("express");
 const socket_io_client_1 = require("socket.io-client");
 exports.UserFlagController = (0, express_1.Router)();
-exports.UserFlagController.get("/setFlagData", (request, response, next) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("${request.hostname}", `${request.hostname}`);
+exports.UserFlagController.post("/setFlagData", (request, response, next) => __awaiter(void 0, void 0, void 0, function* () {
     const socket = (0, socket_io_client_1.io)(`http://localhost:4000`);
-    const data = {};
-    socket.emit("setFlagData", "cnRhcnN0YWRmdXR1dzpzeXV0c3l0ZHlzdDp5ZHRzdGR5dHlkczpkZXY=", data);
+    const data = request.body;
+    socket.emit("setFlagData", data.clientId, data);
     response.sendStatus(200);
 }));
 //# sourceMappingURL=UserFlagController.js.map

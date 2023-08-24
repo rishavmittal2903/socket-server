@@ -4,13 +4,12 @@ import { IUserDefinedFlags } from "../Interfaces/IUserDefinedFlags";
 
 export const UserFlagController = Router();
 
-UserFlagController.get(
+UserFlagController.post(
   "/setFlagData",
   async (request: Request, response: Response, next: NextFunction) => {
-      console.log("${request.hostname}",`${request.hostname}`);
     const socket = io(`http://localhost:4000`);
-    const data:any = {};
-    socket.emit("setFlagData","cnRhcnN0YWRmdXR1dzpzeXV0c3l0ZHlzdDp5ZHRzdGR5dHlkczpkZXY=",data)
+    const data:IUserDefinedFlags = request.body;
+    socket.emit("setFlagData",data.clientId,data)
     response.sendStatus(200);
   }
 );
