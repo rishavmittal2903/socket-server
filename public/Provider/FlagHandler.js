@@ -21,7 +21,7 @@ class FlagHandler {
         const organizationId = decodeData.split(":")[0], projectId = decodeData.split(":")[1], envType = decodeData.split(":")[2] || "";
         (0, ProjectDataProvider_1.getProjectDataByProjectAndOrganizationId)(projectId, organizationId).then((response) => {
             let envTypeResponse;
-            if (response.length) {
+            if (response === null || response === void 0 ? void 0 : response.length) {
                 envTypeResponse = response[0].environments.find((flag) => flag.envType == envType);
             }
             this.sendNotification(key, (envTypeResponse === null || envTypeResponse === void 0 ? void 0 : envTypeResponse.flagData) || []);

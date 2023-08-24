@@ -33,7 +33,7 @@ class FlagHandler {
     getProjectDataByProjectAndOrganizationId(projectId, organizationId).then(
       (response: Array<IProjectDetail>) => {
         let envTypeResponse: IEnvironmentType;
-        if (response.length) {
+        if (response?.length) {
           envTypeResponse = response[0].environments.find(
             (flag: IEnvironmentType) => flag.envType == envType
           );
