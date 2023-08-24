@@ -1,8 +1,6 @@
 import { IOrganization } from "../Interfaces/IOrganization";
 import { dbClient } from "../server";
-import {
-  deleteProjectByOrgId,
-} from "./ProjectDataProvider";
+import { deleteProjectByOrgId } from "./ProjectDataProvider";
 
 export const insertOrganizationData = async (
   organizationData: IOrganization,
@@ -11,7 +9,6 @@ export const insertOrganizationData = async (
   const isDataExists = await getOrganizationDataByOrgId(
     organizationData.organizationId
   );
-  console.log("isDataExists",isDataExists)
   if (isDataExists.length) {
     return await updateOrganizationDataByOrgId(
       organizationData.organizationId,
@@ -38,11 +35,15 @@ export const getOrganizationDataByOrgId = async (organizationId: string) => {
   return data;
 };
 
-export const deleteOrganizationByOrgId = async (organizationId: string) => {
+export const deleteOrganizationByOrgId = async (
+  organizationId: string,
+  socket
+) => {
   const orgData = await dbClient
     .collection<IOrganization>("organizationData")
     .deleteMany({ organizationId });
   const projectData = await deleteProjectByOrgId(organizationId);
+  socket.emit("setFlagData", organizationId, []);
   return { orgData, projectData };
 };
 
@@ -58,7 +59,7 @@ export const updateOrganizationDataByOrgId = async (
   };
   const data = await dbClient
     .collection<IOrganization>("organizationData")
-    .updateOne({ organizationId }, { $set: {...orgData} });
+    .updateOne({ organizationId }, { $set: { ...orgData } });
   return data;
 };
 

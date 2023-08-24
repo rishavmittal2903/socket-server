@@ -20,23 +20,15 @@ class FlagHandler {
         const decodeData = this.decode(key);
         const organizationId = decodeData.split(":")[0], projectId = decodeData.split(":")[1], envType = decodeData.split(":")[2] || "";
         (0, ProjectDataProvider_1.getProjectDataByProjectAndOrganizationId)(projectId, organizationId).then((response) => {
-            let envTypeResponse = [];
+            let envTypeResponse;
             if (response.length) {
-                envTypeResponse = response[0].environments.filter((flag) => flag.envType == envType);
+                envTypeResponse = response[0].environments.find((flag) => flag.envType == envType);
             }
-            this.sendNotification(decodeData, envTypeResponse || []);
+            this.sendNotification(key, (envTypeResponse === null || envTypeResponse === void 0 ? void 0 : envTypeResponse.flagData) || []);
         });
     }
-    setFlagData(key, projectData) {
-        const decodeData = this.decode(key);
-        const envType = decodeData.split(":")[2] || "";
-        (0, ProjectDataProvider_1.insertProjectData)(projectData, "testUser").then((response) => {
-            let envTypeResponse = [];
-            if (projectData.environments.length) {
-                envTypeResponse = projectData.environments.filter((flag) => flag.envType == envType && flag.envId === key);
-            }
-            this.sendNotification(decodeData, envTypeResponse);
-        });
+    setFlagData(key, envTypeResponse) {
+        this.sendNotification(key, envTypeResponse);
     }
     sendNotification(clientId, data) {
         const notification = {

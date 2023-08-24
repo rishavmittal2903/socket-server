@@ -14,7 +14,6 @@ const server_1 = require("../server");
 const ProjectDataProvider_1 = require("./ProjectDataProvider");
 const insertOrganizationData = (organizationData, userName) => __awaiter(void 0, void 0, void 0, function* () {
     const isDataExists = yield (0, exports.getOrganizationDataByOrgId)(organizationData.organizationId);
-    console.log("isDataExists", isDataExists);
     if (isDataExists.length) {
         return yield (0, exports.updateOrganizationDataByOrgId)(organizationData.organizationId, organizationData, userName);
     }
@@ -33,11 +32,12 @@ const getOrganizationDataByOrgId = (organizationId) => __awaiter(void 0, void 0,
     return data;
 });
 exports.getOrganizationDataByOrgId = getOrganizationDataByOrgId;
-const deleteOrganizationByOrgId = (organizationId) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteOrganizationByOrgId = (organizationId, socket) => __awaiter(void 0, void 0, void 0, function* () {
     const orgData = yield server_1.dbClient
         .collection("organizationData")
         .deleteMany({ organizationId });
     const projectData = yield (0, ProjectDataProvider_1.deleteProjectByOrgId)(organizationId);
+    socket.emit("setFlagData", organizationId, []);
     return { orgData, projectData };
 });
 exports.deleteOrganizationByOrgId = deleteOrganizationByOrgId;

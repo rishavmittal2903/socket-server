@@ -41,12 +41,12 @@ exports.client = new mongodb_1.MongoClient(uri, {
 exports.client.connect();
 exports.dbClient = exports.client.db(dbName);
 const server = http_1.default.createServer(app);
-const io = new socket_io_1.Server(server, {
+const dbIo = new socket_io_1.Server(server, {
     cors: {
         origin: "*",
     },
 });
-(0, FlagHandler_1.default)(io);
+(0, FlagHandler_1.default)(dbIo);
 const port = 4000;
 app.use((0, cors_1.default)());
 app.use(express_1.default.static(__dirname));

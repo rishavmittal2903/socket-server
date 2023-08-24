@@ -1,18 +1,26 @@
-import { IProjectDetail } from "../Interfaces/IProjectDetail";
+import { IEnvironmentType, IProjectDetail } from "../Interfaces/IProjectDetail";
 import { dbClient } from "../server";
+import { encode } from "../Utility/Utility";
 
 export const insertProjectData = async (
   flagData: IProjectDetail,
-  userName: string
+  userName: string,
+  socket,
+  envType
 ) => {
   const isDataExists = await getProjectDataByProjectId(flagData.projectId);
+  const flagResponse:IEnvironmentType= flagData.environments.find((flag:IEnvironmentType)=>flag.envType===envType);
   if (isDataExists.length) {
-    return await updateProjectDataByProjectId(
+
+    const response = await updateProjectDataByProjectId(
       flagData.projectId,
       flagData,
       userName
     );
+    socket.emit("setFlagData",flagResponse.envId,flagResponse.flagData)
+    return response;
   }
+
   flagData = {
     ...flagData,
     createdBy: userName,
@@ -21,6 +29,7 @@ export const insertProjectData = async (
   const data = await dbClient
     .collection<IProjectDetail>("projectDetail")
     .insertOne(flagData);
+  socket.emit("setFlagData",flagResponse.envId,flagResponse.flagData)
   return data;
 };
 
@@ -68,11 +77,14 @@ export const getProjectDataByProjectAndOrganizationId = async (
 
 export const deleteProjectByProjectIdAndOrgId = async (
     projectId: string,
-    organizationId: string
+    organizationId: string,
+    socket,
+    envType
   ) => {
     const data = await dbClient
       .collection<IProjectDetail>("projectDetail")
-      .deleteMany({ organizationId, projectId })
+      .deleteMany({ organizationId, projectId });
+      socket.emit('setFlagData',encode(organizationId,projectId,envType),[])
     return data;
   };
 

@@ -11,15 +11,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteProjectByOrgId = exports.deleteProjectByProjectIdAndOrgId = exports.getProjectDataByProjectAndOrganizationId = exports.getProjectsByOrganizationId = exports.updateProjectDataByProjectId = exports.getProjectDataByProjectId = exports.insertProjectData = void 0;
 const server_1 = require("../server");
-const insertProjectData = (flagData, userName) => __awaiter(void 0, void 0, void 0, function* () {
+const Utility_1 = require("../Utility/Utility");
+const insertProjectData = (flagData, userName, socket, envType) => __awaiter(void 0, void 0, void 0, function* () {
     const isDataExists = yield (0, exports.getProjectDataByProjectId)(flagData.projectId);
+    const flagResponse = flagData.environments.find((flag) => flag.envType === envType);
     if (isDataExists.length) {
-        return yield (0, exports.updateProjectDataByProjectId)(flagData.projectId, flagData, userName);
+        const response = yield (0, exports.updateProjectDataByProjectId)(flagData.projectId, flagData, userName);
+        socket.emit("setFlagData", flagResponse.envId, flagResponse.flagData);
+        return response;
     }
     flagData = Object.assign(Object.assign({}, flagData), { createdBy: userName, createdOn: new Date().toLocaleString() });
     const data = yield server_1.dbClient
         .collection("projectDetail")
         .insertOne(flagData);
+    socket.emit("setFlagData", flagResponse.envId, flagResponse.flagData);
     return data;
 });
 exports.insertProjectData = insertProjectData;
@@ -55,10 +60,11 @@ const getProjectDataByProjectAndOrganizationId = (projectId, organizationId) => 
     return data;
 });
 exports.getProjectDataByProjectAndOrganizationId = getProjectDataByProjectAndOrganizationId;
-const deleteProjectByProjectIdAndOrgId = (projectId, organizationId) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteProjectByProjectIdAndOrgId = (projectId, organizationId, socket, envType) => __awaiter(void 0, void 0, void 0, function* () {
     const data = yield server_1.dbClient
         .collection("projectDetail")
         .deleteMany({ organizationId, projectId });
+    socket.emit('setFlagData', (0, Utility_1.encode)(organizationId, projectId, envType), []);
     return data;
 });
 exports.deleteProjectByProjectIdAndOrgId = deleteProjectByProjectIdAndOrgId;

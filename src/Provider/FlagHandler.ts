@@ -1,8 +1,8 @@
 import { v4 } from "uuid";
 import { IEnvironmentType, IProjectDetail } from "../Interfaces/IProjectDetail";
+import { IFlagData } from "../Interfaces/IUserDefinedFlags";
 import {
   getProjectDataByProjectAndOrganizationId,
-  insertProjectData,
 } from "./ProjectDataProvider";
 
 class FlagHandler {
@@ -13,7 +13,7 @@ class FlagHandler {
     this.io = io;
 
     socket.on("getFlagData", (key: string) => this.getFlagData(key));
-    socket.on("setFlagData", (key: string, flagData: IProjectDetail) =>
+    socket.on("setFlagData", (key: string, flagData: Array<IFlagData>) =>
       this.setFlagData(key, flagData)
     );
     socket.on("connect_error", (err) => {
@@ -25,41 +25,28 @@ class FlagHandler {
     const bufferObj = Buffer.from(key, "base64");
     return bufferObj.toString("utf8");
   }
-  getFlagData(key: string) {
+  getFlagData(key: string ) {
     const decodeData: string = this.decode(key);
     const organizationId: string = decodeData.split(":")[0],
       projectId: string = decodeData.split(":")[1],
       envType: string = decodeData.split(":")[2] || "";
     getProjectDataByProjectAndOrganizationId(projectId, organizationId).then(
       (response: Array<IProjectDetail>) => {
-        let envTypeResponse: Array<IEnvironmentType> = [];
+        let envTypeResponse: IEnvironmentType;
         if (response.length) {
-          envTypeResponse = response[0].environments.filter(
+          envTypeResponse = response[0].environments.find(
             (flag: IEnvironmentType) => flag.envType == envType
           );
         }
-
-        this.sendNotification(decodeData, envTypeResponse || []);
+        this.sendNotification(key, envTypeResponse?.flagData || []);
       }
     );
   }
 
-  setFlagData(key: string, projectData: IProjectDetail) {
-    const decodeData: string = this.decode(key);
-    const envType: string = decodeData.split(":")[2] || "";
-
-    insertProjectData(projectData, "testUser").then((response) => {
-      let envTypeResponse: Array<IEnvironmentType> = [];
-      if (projectData.environments.length) {
-        envTypeResponse = projectData.environments.filter(
-          (flag: IEnvironmentType) =>
-            flag.envType == envType && flag.envId === key
-        );
-      }
-      this.sendNotification(decodeData, envTypeResponse);
-    });
+  setFlagData(key: string, envTypeResponse: Array<IFlagData>) {
+    this.sendNotification(key, envTypeResponse);
   }
-  sendNotification(clientId: string, data: Array<IEnvironmentType>) {
+  sendNotification(clientId: string, data: Array<IFlagData>) {
     const notification = {
       id: v4(),
       data,

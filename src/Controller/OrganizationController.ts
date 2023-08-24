@@ -1,4 +1,5 @@
 import { Router, Request, Response, NextFunction } from "express";
+import { io } from "socket.io-client";
 import { IOrganization } from "../Interfaces/IOrganization";
 import {
     deleteOrganizationByOrgId,
@@ -7,6 +8,7 @@ import {
 } from "../Provider/OrganizationProvider";
 
 export const OrganizationController = Router();
+const socket = io(`http://localhost:4000`);
 
 OrganizationController.get(
   "/organization/:organizationId",
@@ -39,7 +41,7 @@ OrganizationController.delete(
     async (request: Request, response: Response, next: NextFunction) => {
       try {
         const organizationId: string = request.params?.orgId || "";
-        const data = await deleteOrganizationByOrgId(organizationId);
+        const data = await deleteOrganizationByOrgId(organizationId,socket);
         response.send(data);
       } catch (err) {
         response.send(err).sendStatus(500);

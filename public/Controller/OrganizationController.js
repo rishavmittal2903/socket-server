@@ -11,8 +11,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OrganizationController = void 0;
 const express_1 = require("express");
+const socket_io_client_1 = require("socket.io-client");
 const OrganizationProvider_1 = require("../Provider/OrganizationProvider");
 exports.OrganizationController = (0, express_1.Router)();
+const socket = (0, socket_io_client_1.io)(`http://localhost:4000`);
 exports.OrganizationController.get("/organization/:organizationId", (request, response, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
@@ -38,7 +40,7 @@ exports.OrganizationController.delete("/organization/:orgId", (request, response
     var _b;
     try {
         const organizationId = ((_b = request.params) === null || _b === void 0 ? void 0 : _b.orgId) || "";
-        const data = yield (0, OrganizationProvider_1.deleteOrganizationByOrgId)(organizationId);
+        const data = yield (0, OrganizationProvider_1.deleteOrganizationByOrgId)(organizationId, socket);
         response.send(data);
     }
     catch (err) {

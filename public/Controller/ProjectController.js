@@ -11,8 +11,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProjectController = void 0;
 const express_1 = require("express");
+const socket_io_client_1 = require("socket.io-client");
 const ProjectDataProvider_1 = require("../Provider/ProjectDataProvider");
 exports.ProjectController = (0, express_1.Router)();
+const socket = (0, socket_io_client_1.io)(`http://localhost:4000`);
 exports.ProjectController.get("/project/:projectId", (request, response, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
@@ -36,9 +38,11 @@ exports.ProjectController.get("/projects/:orgId", (request, response, next) => _
     }
 }));
 exports.ProjectController.post("/project", (request, response, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _c;
     try {
         const projectData = request.body;
-        const data = yield (0, ProjectDataProvider_1.insertProjectData)(projectData, "testUser");
+        const envType = (_c = request.headers) === null || _c === void 0 ? void 0 : _c.envtype;
+        const data = yield (0, ProjectDataProvider_1.insertProjectData)(projectData, "testUser", socket, envType);
         response.send(data);
     }
     catch (err) {
@@ -46,11 +50,12 @@ exports.ProjectController.post("/project", (request, response, next) => __awaite
     }
 }));
 exports.ProjectController.delete("/project/:projId/:orgId", (request, response, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _c, _d;
+    var _d, _e, _f;
     try {
-        const projId = ((_c = request.params) === null || _c === void 0 ? void 0 : _c.projId) || "";
-        const orgId = ((_d = request.params) === null || _d === void 0 ? void 0 : _d.orgId) || "";
-        const data = yield (0, ProjectDataProvider_1.deleteProjectByProjectIdAndOrgId)(projId, orgId);
+        const projId = ((_d = request.params) === null || _d === void 0 ? void 0 : _d.projId) || "";
+        const orgId = ((_e = request.params) === null || _e === void 0 ? void 0 : _e.orgId) || "";
+        const envType = (_f = request.headers) === null || _f === void 0 ? void 0 : _f.envtype;
+        const data = yield (0, ProjectDataProvider_1.deleteProjectByProjectIdAndOrgId)(projId, orgId, socket, envType);
         response.send(data);
     }
     catch (err) {

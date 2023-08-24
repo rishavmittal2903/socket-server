@@ -1,8 +1,9 @@
 import { Router, Request, Response, NextFunction } from "express";
+import { io } from "socket.io-client";
 import { IProjectDetail } from "../Interfaces/IProjectDetail";
 import { deleteProjectByProjectIdAndOrgId, getProjectDataByProjectId, getProjectsByOrganizationId, insertProjectData } from "../Provider/ProjectDataProvider";
-
 export const ProjectController = Router();
+const socket = io(`http://localhost:4000`);
 
 ProjectController.get(
   "/project/:projectId",
@@ -37,7 +38,8 @@ ProjectController.post(
   async (request: Request, response: Response, next: NextFunction) => {
     try {
       const projectData: IProjectDetail = request.body;
-      const data = await insertProjectData(projectData, "testUser");
+      const envType:any = request.headers?.envtype;
+      const data = await insertProjectData(projectData, "testUser", socket, envType);
       response.send(data);
     } catch (err) {
       response.send(err).sendStatus(500);
@@ -50,7 +52,8 @@ ProjectController.delete(
       try {
         const projId: string = request.params?.projId || "";
         const orgId:string = request.params?.orgId || "";
-        const data = await deleteProjectByProjectIdAndOrgId(projId,orgId);
+        const envType:any = request.headers?.envtype;
+        const data = await deleteProjectByProjectIdAndOrgId(projId,orgId, socket,envType);
         response.send(data);
       } catch (err) {
         response.send(err).sendStatus(500);

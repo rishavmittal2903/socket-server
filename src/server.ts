@@ -39,13 +39,13 @@ export const client = new MongoClient(uri, {
 client.connect();
 export const dbClient = client.db(dbName);
 const server = http.createServer(app);
-const io = new Server(server, {
+const dbIo = new Server(server, {
   cors: {
     origin: "*",
   },
 });
 
-socketConnectionHandler(io);
+socketConnectionHandler(dbIo);
 const port = 4000;
 app.use(cors());
 app.use(Express.static(__dirname));
