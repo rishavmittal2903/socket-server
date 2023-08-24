@@ -15,6 +15,7 @@ const ProjectController_1 = require("./Controller/ProjectController");
 const OrganizationController_1 = require("./Controller/OrganizationController");
 const RbacOrganizationController_1 = require("./Controller/RbacOrganizationController");
 const RbacProjectController_1 = require("./Controller/RbacProjectController");
+const UserController_1 = require("./Controller/UserController");
 process.on("uncaughtException", (error, origin) => {
     console.log("----- Uncaught exception -----");
     console.log(error);
@@ -56,5 +57,6 @@ app.use("/api/v1", ProjectController_1.ProjectController);
 app.use("/api/v1", OrganizationController_1.OrganizationController);
 app.use("/api/v1", RbacOrganizationController_1.RbacOrganizationController);
 app.use("/api/v1", RbacProjectController_1.RbacProjectController);
+app.use("/api/v1", UserController_1.UserController);
 server.listen(port, () => console.log("Http server started on port " + port));
 //# sourceMappingURL=server.js.map

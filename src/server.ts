@@ -9,6 +9,7 @@ import { ProjectController } from "./Controller/ProjectController";
 import { OrganizationController } from "./Controller/OrganizationController";
 import { RbacOrganizationController } from "./Controller/RbacOrganizationController";
 import { RbacProjectController } from "./Controller/RbacProjectController";
+import { UserController } from "./Controller/UserController";
 
 process.on("uncaughtException", (error, origin) => {
   console.log("----- Uncaught exception -----");
@@ -55,4 +56,6 @@ app.use("/api/v1", ProjectController);
 app.use("/api/v1", OrganizationController);
 app.use("/api/v1", RbacOrganizationController);
 app.use("/api/v1", RbacProjectController);
+app.use("/api/v1", UserController);
+
 server.listen(port, () => console.log("Http server started on port " + port));
