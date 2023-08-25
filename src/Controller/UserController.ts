@@ -4,6 +4,7 @@ import {
   deleteUserByUserId,
   getUsers,
   getUsersByOrgId,
+  getUsersByUserId,
   insertUserData,
   updateUserDataByEmailId,
 } from "../Provider/UserProvider";
@@ -66,6 +67,19 @@ UserController.delete(
     try {
       const userId: string = request.params?.userId || "";
       const data = await deleteUserByUserId(userId);
+      response.send(data);
+    } catch (err) {
+      response.send(err).sendStatus(500);
+    }
+  }
+);
+
+UserController.get(
+  "/userData/:userId",
+  async (request: Request, response: Response, next: NextFunction) => {
+    try {
+      const emailId: string = request.params?.userId || "";
+      const data: Array<IUserDetail> = await getUsersByUserId(emailId);
       response.send(data);
     } catch (err) {
       response.send(err).sendStatus(500);

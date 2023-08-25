@@ -67,4 +67,15 @@ exports.UserController.delete("/user/:userId", (request, response, next) => __aw
         response.send(err).sendStatus(500);
     }
 }));
+exports.UserController.get("/userData/:userId", (request, response, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _d;
+    try {
+        const emailId = ((_d = request.params) === null || _d === void 0 ? void 0 : _d.userId) || "";
+        const data = yield (0, UserProvider_1.getUsersByUserId)(emailId);
+        response.send(data);
+    }
+    catch (err) {
+        response.send(err).sendStatus(500);
+    }
+}));
 //# sourceMappingURL=UserController.js.map
