@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.insertUserData = exports.updateUserDataByEmailId = exports.deleteUserByUserId = exports.getUsersByOrgId = exports.getUsersByUserId = exports.getUsers = void 0;
+exports.insertUserData = exports.updateUserDataByEmailId = exports.deleteUserByUserId = exports.getUsersByOrgId = exports.getUserDataByEmailAndPassword = exports.getUsersByUserId = exports.getUsers = void 0;
 const server_1 = require("../server");
 const getUsers = () => __awaiter(void 0, void 0, void 0, function* () {
     const data = yield server_1.dbClient
@@ -27,6 +27,14 @@ const getUsersByUserId = (emailId) => __awaiter(void 0, void 0, void 0, function
     return data;
 });
 exports.getUsersByUserId = getUsersByUserId;
+const getUserDataByEmailAndPassword = (email, password) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield server_1.dbClient
+        .collection("userDetail")
+        .find({ email, password })
+        .toArray();
+    return data;
+});
+exports.getUserDataByEmailAndPassword = getUserDataByEmailAndPassword;
 const getUsersByOrgId = (orgId) => __awaiter(void 0, void 0, void 0, function* () {
     const data = yield server_1.dbClient
         .collection("userDetail")

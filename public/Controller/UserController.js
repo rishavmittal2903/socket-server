@@ -37,8 +37,7 @@ exports.UserController.post("/users", (request, response, next) => __awaiter(voi
     try {
         const userData = request.body;
         const data = yield (0, UserProvider_1.insertUserData)(userData);
-        response
-            .send(data === 409 ? "User already exists" : data);
+        response.sendStatus(data === 409 ? 409 : 201);
     }
     catch (err) {
         response.send(err).sendStatus(500);
@@ -73,6 +72,22 @@ exports.UserController.get("/userData/:userId", (request, response, next) => __a
         const emailId = ((_d = request.params) === null || _d === void 0 ? void 0 : _d.userId) || "";
         const data = yield (0, UserProvider_1.getUsersByUserId)(emailId);
         response.send(data);
+    }
+    catch (err) {
+        response.send(err).sendStatus(500);
+    }
+}));
+exports.UserController.post("/userData", (request, response, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const userData = request.body;
+        const data = yield (0, UserProvider_1.getUserDataByEmailAndPassword)(userData === null || userData === void 0 ? void 0 : userData.email, userData === null || userData === void 0 ? void 0 : userData.password);
+        if (data.length) {
+            delete data[0].password;
+            response.send(data);
+        }
+        else {
+            response.sendStatus(500);
+        }
     }
     catch (err) {
         response.send(err).sendStatus(500);

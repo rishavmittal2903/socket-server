@@ -2,6 +2,7 @@ import { Router, Request, Response, NextFunction } from "express";
 import { IUserDetail } from "../Interfaces/IUserDetail";
 import {
   deleteUserByUserId,
+  getUserDataByEmailAndPassword,
   getUsers,
   getUsersByOrgId,
   getUsersByUserId,
@@ -41,8 +42,7 @@ UserController.post(
     try {
       const userData: IUserDetail = request.body;
       const data: any = await insertUserData(userData);
-      response
-        .send(data === 409 ? "User already exists" : data)
+      response.sendStatus(data===409?409:201);
     } catch (err) {
       response.send(err).sendStatus(500);
     }
@@ -81,6 +81,27 @@ UserController.get(
       const emailId: string = request.params?.userId || "";
       const data: Array<IUserDetail> = await getUsersByUserId(emailId);
       response.send(data);
+    } catch (err) {
+      response.send(err).sendStatus(500);
+    }
+  }
+);
+
+UserController.post(
+  "/userData",
+  async (request: Request, response: Response, next: NextFunction) => {
+    try {
+      const userData = request.body
+      const data: Array<IUserDetail> = await getUserDataByEmailAndPassword(userData?.email, userData?.password);
+      if(data.length)
+      {
+        delete data[0].password;
+        response.send(data);
+      }
+      else
+      {
+        response.sendStatus(500);
+      }
     } catch (err) {
       response.send(err).sendStatus(500);
     }

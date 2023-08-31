@@ -16,6 +16,13 @@ export const getUsersByUserId = async (emailId: string) => {
     .toArray();
   return data;
 };
+export const getUserDataByEmailAndPassword = async (email: string,password:string) => {
+  const data = await dbClient
+    .collection<IUserDetail>("userDetail")
+    .find({ email,password })
+    .toArray();
+  return data;
+};
 export const getUsersByOrgId = async (orgId: string) => {
   const data = await dbClient
     .collection<IUserDetail>("userDetail")
