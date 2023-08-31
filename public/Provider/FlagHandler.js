@@ -7,7 +7,9 @@ class FlagHandler {
         this.socket = socket;
         this.io = io;
         socket.on("getFlagData", (key) => this.getFlagData(key));
-        socket.on("setFlagData", (key, flagData) => this.setFlagData(key, flagData));
+        socket.on("setFlagData", (key, flagData) => {
+            this.setFlagData(key, flagData);
+        });
         socket.on("connect_error", (err) => {
             console.log(`connect_error due to ${err.message}`);
         });

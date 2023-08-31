@@ -58,20 +58,19 @@ exports.ProjectController.post("/project", (request, response, next) => __awaite
         response.send(data);
     }
     catch (err) {
-        response.send(err).sendStatus(500);
+        response.send(err);
     }
 }));
 exports.ProjectController.delete("/project/:projId/:orgId", (request, response, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _f, _g, _h;
+    var _f, _g;
     try {
         const projId = ((_f = request.params) === null || _f === void 0 ? void 0 : _f.projId) || "";
         const orgId = ((_g = request.params) === null || _g === void 0 ? void 0 : _g.orgId) || "";
-        const envType = (_h = request.headers) === null || _h === void 0 ? void 0 : _h.envtype;
-        const data = yield (0, ProjectDataProvider_1.deleteProjectByProjectIdAndOrgId)(projId, orgId, socket, envType);
+        const data = yield (0, ProjectDataProvider_1.deleteProjectByProjectIdAndOrgId)(projId, orgId, socket);
         response.send(data);
     }
     catch (err) {
-        response.send(err).sendStatus(500);
+        response.send(err);
     }
 }));
 //# sourceMappingURL=ProjectController.js.map

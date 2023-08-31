@@ -59,7 +59,7 @@ ProjectController.post(
       const data = await insertProjectData(projectData, "testUser", socket, envType);
       response.send(data);
     } catch (err) {
-      response.send(err).sendStatus(500);
+      response.send(err)
     }
   }
 );
@@ -69,11 +69,10 @@ ProjectController.delete(
       try {
         const projId: string = request.params?.projId || "";
         const orgId:string = request.params?.orgId || "";
-        const envType:any = request.headers?.envtype;
-        const data = await deleteProjectByProjectIdAndOrgId(projId,orgId, socket,envType);
+        const data = await deleteProjectByProjectIdAndOrgId(projId,orgId, socket);
         response.send(data);
       } catch (err) {
-        response.send(err).sendStatus(500);
+        response.send(err);
       }
     }
   );

@@ -9,15 +9,16 @@ export const insertProjectData = async (
   envType
 ) => {
   const isDataExists = await getProjectDataByProjectId(flagData.projectId);
-  const flagResponse:IEnvironmentType= flagData.environments.find((flag:IEnvironmentType)=>flag.envType===envType);
+  const flagResponse: IEnvironmentType = flagData.environments.find(
+    (flag: IEnvironmentType) => flag.envType === envType
+  );
   if (isDataExists.length) {
-
     const response = await updateProjectDataByProjectId(
       flagData.projectId,
       flagData,
       userName
     );
-    socket.emit("setFlagData",flagResponse.envId,flagResponse.flagData)
+    socket.emit("setFlagData", flagResponse.envId, flagResponse.flagData);
     return response;
   }
 
@@ -29,7 +30,7 @@ export const insertProjectData = async (
   const data = await dbClient
     .collection<IProjectDetail>("projectDetail")
     .insertOne(flagData);
-  socket.emit("setFlagData",flagResponse.envId,flagResponse.flagData)
+  socket.emit("setFlagData", flagResponse.envId, flagResponse.flagData);
   return data;
 };
 
@@ -46,7 +47,7 @@ export const updateProjectDataByProjectId = async (
   projectData: IProjectDetail,
   userName: string
 ) => {
-    projectData = {
+  projectData = {
     ...projectData,
     updatedBy: userName,
     updatedOn: new Date().toLocaleString(),
@@ -75,32 +76,59 @@ export const getProjectDataByProjectAndOrganizationId = async (
   return data;
 };
 
-export const getProjectsByEmailId = async (emailId: string, orgId:string) => {
+export const getProjectsByEmailId = async (emailId: string, orgId: string) => {
   const data = await dbClient
     .collection<IProjectDetail>("projectDetail")
-    .find({ $or: [ { "owners.email": emailId }, { "contributors.email": emailId } ], $and:[{organizationId:orgId}] })
+    .find({
+      $or: [{ "owners.email": emailId }, { "contributors.email": emailId }],
+      $and: [{ organizationId: orgId }],
+    })
     .toArray();
   return data;
 };
 
 export const deleteProjectByProjectIdAndOrgId = async (
-    projectId: string,
-    organizationId: string,
-    socket,
-    envType
-  ) => {
-    const data = await dbClient
-      .collection<IProjectDetail>("projectDetail")
-      .deleteMany({ organizationId, projectId });
-      socket.emit('setFlagData',encode(organizationId,projectId,envType),[])
-    return data;
-  };
+  projectId: string,
+  organizationId: string,
+  socket
+) => {
+  const existingData = await dbClient
+    .collection<IProjectDetail>("projectDetail")
+    .find({ projectId })
+    .toArray();
+  const data = await dbClient
+    .collection<IProjectDetail>("projectDetail")
+    .deleteMany({ organizationId, projectId });
+  if (data.deletedCount > 0) {
+    triggerEmptyResponseToEvent(
+      existingData,
+      socket,
+      projectId,
+      organizationId
+    );
+  }
+  return data;
+};
 
-  export const deleteProjectByOrgId = async (
-    organizationId: string
-  ) => {
-    const data = await dbClient
-      .collection<IProjectDetail>("projectDetail")
-      .deleteMany({ organizationId })
-    return data;
-  };
+const triggerEmptyResponseToEvent = (
+  existingData: Array<IProjectDetail>,
+  socket,
+  projectId: string,
+  organizationId: string
+) => {
+  existingData.forEach((proj: IProjectDetail) => {
+    proj.environments.forEach((env: IEnvironmentType) => {
+      socket.emit(
+        "setFlagData",
+        encode(organizationId, projectId, env.envType),
+        []
+      );
+    });
+  });
+};
+export const deleteProjectByOrgId = async (organizationId: string) => {
+  const data = await dbClient
+    .collection<IProjectDetail>("projectDetail")
+    .deleteMany({ organizationId });
+  return data;
+};

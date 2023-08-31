@@ -63,19 +63,35 @@ exports.getProjectDataByProjectAndOrganizationId = getProjectDataByProjectAndOrg
 const getProjectsByEmailId = (emailId, orgId) => __awaiter(void 0, void 0, void 0, function* () {
     const data = yield server_1.dbClient
         .collection("projectDetail")
-        .find({ $or: [{ "owners.email": emailId }, { "contributors.email": emailId }], $and: [{ organizationId: orgId }] })
+        .find({
+        $or: [{ "owners.email": emailId }, { "contributors.email": emailId }],
+        $and: [{ organizationId: orgId }],
+    })
         .toArray();
     return data;
 });
 exports.getProjectsByEmailId = getProjectsByEmailId;
-const deleteProjectByProjectIdAndOrgId = (projectId, organizationId, socket, envType) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteProjectByProjectIdAndOrgId = (projectId, organizationId, socket) => __awaiter(void 0, void 0, void 0, function* () {
+    const existingData = yield server_1.dbClient
+        .collection("projectDetail")
+        .find({ projectId })
+        .toArray();
     const data = yield server_1.dbClient
         .collection("projectDetail")
         .deleteMany({ organizationId, projectId });
-    socket.emit('setFlagData', (0, Utility_1.encode)(organizationId, projectId, envType), []);
+    if (data.deletedCount > 0) {
+        triggerEmptyResponseToEvent(existingData, socket, projectId, organizationId);
+    }
     return data;
 });
 exports.deleteProjectByProjectIdAndOrgId = deleteProjectByProjectIdAndOrgId;
+const triggerEmptyResponseToEvent = (existingData, socket, projectId, organizationId) => {
+    existingData.forEach((proj) => {
+        proj.environments.forEach((env) => {
+            socket.emit("setFlagData", (0, Utility_1.encode)(organizationId, projectId, env.envType), []);
+        });
+    });
+};
 const deleteProjectByOrgId = (organizationId) => __awaiter(void 0, void 0, void 0, function* () {
     const data = yield server_1.dbClient
         .collection("projectDetail")
